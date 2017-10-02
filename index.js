@@ -152,26 +152,26 @@ function getNextTimeout(){
 	startTime.setHours(22);
 	startTime.setMinutes(0);
 	waitingTime = startTime.getTime() - now.getTime();
+
+	if(waitingTime < 0){
+		startTime.setDate(startTime.getDate + 1);
+		getNextTimeout();
+	}
+
 	console.log('Next search starts in '  + waitingTime/(60*1000) + ' minutes.');
 	return waitingTime;
 }
 
 (function initialize() {
 	var nextEjecTime = getNextTimeout();
-	if(nextEjecTime < 0){
-		startTime.setDate(startTime.getDate + 1);
-		initialize();
-	}
-	else{
-		setTimeout(function(){
-			var searchInterval = setInterval(search, LIMIT_TIME / LIMIT_GET);
-			var publishInterval = setInterval(publish, LIMIT_TIME / LIMIT_POST);
-			setTimeout(function () {
-			  clearInterval(searchInterval);
-			  clearInterval(publishInterval);
-			}, LIMIT_TIME);
-			startTime.setDate(startTime.getDate + 1);
-			initialize();
-		}, nextEjecTime);
-	}	
+	
+	setTimeout(function(){
+		var searchInterval = setInterval(search, LIMIT_TIME / LIMIT_GET);
+		var publishInterval = setInterval(publish, LIMIT_TIME / LIMIT_POST);
+		setTimeout(function () {
+		  clearInterval(searchInterval);
+		  clearInterval(publishInterval);
+		  initialize();
+		}, LIMIT_TIME);
+	}, nextEjecTime);
 })();
