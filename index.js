@@ -145,11 +145,28 @@ function handleError(err) {
   console.error(err);
 }
 
+function checkTime(){
+	var d = new Date();
+	var time_to_tweet;
+	if(d.getHours() == 22 && d.getMinutes() < 15){
+		time_to_tweet = true;
+		LIMIT_TIME = (15-d.getMinutes())*60*1000; 
+	}
+	else time_to_tweet= false;
+	
+	return time_to_tweet;
+}
+
 (function initialize() {
-  var searchInterval = setInterval(search, LIMIT_TIME / LIMIT_GET);
-  var publishInterval = setInterval(publish, LIMIT_TIME / LIMIT_POST);
-  setTimeout(function () {
-    clearInterval(searchInterval);
-    clearInterval(publishInterval);
-  }, LIMIT_TIME);
+	setInterval(function(){
+		if(checkTime()){
+		  	var searchInterval = setInterval(search, LIMIT_TIME / LIMIT_GET);
+			var publishInterval = setInterval(publish, LIMIT_TIME / LIMIT_POST);
+			setTimeout(function () {
+				clearInterval(searchInterval);
+				clearInterval(publishInterval);
+			}, LIMIT_TIME);
+		}
+		else console.log("Not my time to tweet");
+	}, 1000); 
 })();
