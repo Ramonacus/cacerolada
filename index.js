@@ -1,74 +1,12 @@
 var Twitter = require('twitter');
 var config = require('./config.js');
+var noisesList = require('./noises.js');
 var client = new Twitter(config);
 var sinceId = null;
 var replyQueue = [];
 var LIMIT_TIME = 15 * 60 * 1000;
 var LIMIT_POST = 90;
 var LIMIT_GET = 10;
-
-var noisesList = [
-  'BAM',
-  'BANG',
-  'CACHAPLÚN',
-  'CACHING',
-  'CACHONK',
-  'CARRACRAC',
-  'CATACROC',
-  'CHUNDA',
-  'CHUNDA TACHUNDA',
-  'CLAC',
-  'CLAN',
-  'CLANCH',
-  'CLANG',
-  'CLANK',
-  'CLEC',
-  'CLEN',
-  'CLENCH',
-  'CLENG',
-  'CLENK',
-  'CLIC',
-  'CLIN',
-  'CLINCH',
-  'CLING',
-  'CLINK',
-  'CLOC',
-  'CLON',
-  'CLONCH',
-  'CLONG',
-  'CLONK',
-  'CLUC',
-  'CLUN',
-  'CLUNCH',
-  'CLUNG',
-  'CLUNK',
-  'DOOOONG',
-  'DONG',
-  'GAN',
-  'GAAAN',
-  'GON',
-  'GONG',
-  'GOOONG',
-  'KANG',
-  'KONCH',
-  'NANG',
-  'NAAAANG',
-  'RAKA RAKA RAKA',
-  'TIC',
-  'TIIING',
-  'TIING',
-  'TING',
-  'TOC',
-  'PATAPÚN',
-  'PONCH',
-  'PUNCHI',
-  'PLAC',
-  'PLAK',
-  'PLING',
-  'PLONK',
-  'ZOING',
-  'ZONK'
-];
 
 function getRandomNoise() {
   return noisesList[Math.floor(Math.random() * noisesList.length)];
