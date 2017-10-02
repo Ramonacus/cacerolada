@@ -7,7 +7,6 @@ var replyQueue = [];
 var LIMIT_TIME = 15 * 60 * 1000;
 var LIMIT_POST = 90;
 var LIMIT_GET = 10;
-var startTime = new Date();
 
 function getRandomNoise() {
   return noisesList[Math.floor(Math.random() * noisesList.length)];
@@ -84,16 +83,17 @@ function handleError(err) {
   console.error(err);
 }
 
-function getNextTimeout(){
+function getNextExecutionTime(){
 	var now = new Date();
+	var startTime = new Date();
 	var waitingTime;
+
 	startTime.setHours(22);
 	startTime.setMinutes(0);
 	waitingTime = startTime.getTime() - now.getTime();
 
-	if(waitingTime < 0){
-		startTime.setDate(startTime.getDate + 1);
-		getNextTimeout();
+	if (waitingTime < 0){
+		waitingTime += 24 * 60 * 60 * 10;
 	}
 
 	console.log('Next search starts in '  + waitingTime/(60*1000) + ' minutes.');
@@ -101,8 +101,7 @@ function getNextTimeout(){
 }
 
 (function initialize() {
-	var nextEjecTime = getNextTimeout();
-	
+
 	setTimeout(function(){
 		var searchInterval = setInterval(search, LIMIT_TIME / LIMIT_GET);
 		var publishInterval = setInterval(publish, LIMIT_TIME / LIMIT_POST);
@@ -111,5 +110,5 @@ function getNextTimeout(){
 		  clearInterval(publishInterval);
 		  initialize();
 		}, LIMIT_TIME);
-	}, nextEjecTime);
+	}, getNextExecutionTime());
 })();
