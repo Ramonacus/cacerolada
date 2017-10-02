@@ -6,6 +6,7 @@ var replyQueue = [];
 var LIMIT_TIME = 15 * 60 * 1000;
 var LIMIT_POST = 90;
 var LIMIT_GET = 10;
+var startTime = new Date();
 
 var noisesList = [
   'BAM',
@@ -145,28 +146,38 @@ function handleError(err) {
   console.error(err);
 }
 
-function checkTime(){
-	var d = new Date();
-	var time_to_tweet;
-	if(d.getHours() == 22 && d.getMinutes() < 15){
-		time_to_tweet = true;
-		LIMIT_TIME = (15-d.getMinutes())*60*1000; 
-	}
-	else time_to_tweet= false;
-	
-	return time_to_tweet;
+function getNextTimeout(){
+	var now = new Date();
+	var waitingTime;
+
+	startTime.setHours(22);
+	startTime.setMinutes(0);
+	waitingTime = startTime.getTime() - now.getTime();
+
+	console.log('Next search starts in '  + waitingTime/(60*1000) + ' minutes.');
+
+	return waitingTime;
 }
 
 (function initialize() {
-	setInterval(function(){
-		if(checkTime()){
-		  	var searchInterval = setInterval(search, LIMIT_TIME / LIMIT_GET);
+	var nextEjecTime = getNextTimeout();
+
+	if(nextEjecTime < 0){
+		startTime.setDate(startTime.getDate + 1);
+		initialize();
+	}
+	else{
+		setTimeout(function(){
+			var searchInterval = setInterval(search, LIMIT_TIME / LIMIT_GET);
 			var publishInterval = setInterval(publish, LIMIT_TIME / LIMIT_POST);
+			
 			setTimeout(function () {
-				clearInterval(searchInterval);
-				clearInterval(publishInterval);
+			  clearInterval(searchInterval);
+			  clearInterval(publishInterval);
 			}, LIMIT_TIME);
-		}
-		else console.log("Not my time to tweet");
-	}, 1000); 
+
+			startTime.setDate(startTime.getDate + 1);
+			initialize();
+		}, nextEjecTime);
+	}	
 })();
