@@ -5,7 +5,7 @@ var client = new Twitter(config);
 var sinceId = null;
 var replyQueue = [];
 var LIMIT_TIME = 15 * 60 * 1000;
-var LIMIT_POST = 90;
+var LIMIT_POST = 60;
 var LIMIT_GET = 10;
 
 function getRandomNoise() {
@@ -92,8 +92,8 @@ function getNextExecutionTime(){
 	startTime.setMinutes(0);
 	waitingTime = startTime.getTime() - now.getTime();
 
-	if (waitingTime < 0){
-		waitingTime += 24 * 60 * 60 * 10;
+	while (waitingTime <= 0){
+		waitingTime += 24 * 60 * 60 * 1000;
 	}
 
 	console.log('Next search starts in '  + waitingTime/(60*1000) + ' minutes.');
@@ -101,6 +101,8 @@ function getNextExecutionTime(){
 }
 
 (function initialize() {
+  sinceId = null;
+  replyQueue = [];
 
 	setTimeout(function(){
 		var searchInterval = setInterval(search, LIMIT_TIME / LIMIT_GET);
