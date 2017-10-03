@@ -1,4 +1,4 @@
-module.exports = [
+var list = [
   'BAM',
   'BANG',
   'CACHAPLÚN',
@@ -60,3 +60,27 @@ module.exports = [
   'ZOING',
   'ZONK'
 ];
+
+
+function getRandomNoise() {
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+function createNoises(maxLength) {
+  var next = getRandomNoise();
+  var noise;
+
+  maxLength = maxLength || 140;
+
+  do {
+    noise = next;
+    next += ' ' + getRandomNoise();
+  } while (next.length < maxLength);
+
+  return noise;
+}
+
+module.exports = {
+  getRandomNoise: getRandomNoise,
+  createNoises: createNoises
+}
